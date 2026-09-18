@@ -7,6 +7,8 @@ export interface DashboardLayoutProps {
     subtitle: string;
     userEmail?: string | null;
     onLogout: () => void;
+    activeTab?: "overview" | "performance";
+    onSelectTab?: (tab: "overview" | "performance") => void;
     children: React.ReactNode;
 }
 
@@ -15,6 +17,8 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({
     subtitle,
     userEmail,
     onLogout,
+    activeTab = "overview",
+    onSelectTab,
     children
 }) => {
     const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
@@ -26,6 +30,8 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({
                 onLogout={onLogout}
                 isOpen={mobileSidebarOpen}
                 onClose={() => setMobileSidebarOpen(false)}
+                activeTab={activeTab}
+                onSelectTab={onSelectTab}
             />
 
             {/* Main Content Area */}

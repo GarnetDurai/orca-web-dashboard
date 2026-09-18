@@ -1,11 +1,17 @@
 import React from "react";
 
-export const LoadingState: React.FC = () => {
+export interface LoadingStateProps {
+    message?: string;
+}
+
+export const LoadingState: React.FC<LoadingStateProps> = ({
+    message = "Loading overview analytics..."
+}) => {
     return (
         <div data-testid="loading-state" className="py-12 flex flex-col items-center justify-center gap-3">
             <div className="w-7 h-7 border-2 border-slate-300 dark:border-slate-700 border-t-sky-500 rounded-full animate-spin" />
             <p className="text-xs font-medium text-slate-500 dark:text-slate-400">
-                Loading overview analytics...
+                {message}
             </p>
         </div>
     );
@@ -46,12 +52,18 @@ export const ErrorState: React.FC<ErrorStateProps> = ({ message, onRetry }) => {
 export interface EmptyStateProps {
     title?: string;
     description?: string;
+    message?: string;
 }
 
 export const EmptyState: React.FC<EmptyStateProps> = ({
     title = "No Practice Data Yet",
-    description = "Complete practice sessions on LeetCode with the ORCA Chrome Extension to populate your DSA overview."
+    description,
+    message
 }) => {
+    const finalDescription =
+        message ||
+        description ||
+        "Complete practice sessions on LeetCode with the ORCA Chrome Extension to populate your DSA overview.";
     return (
         <div
             data-testid="empty-state"
@@ -61,7 +73,7 @@ export const EmptyState: React.FC<EmptyStateProps> = ({
                 {title}
             </h3>
             <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 max-w-sm mx-auto">
-                {description}
+                {finalDescription}
             </p>
         </div>
     );

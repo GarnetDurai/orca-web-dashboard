@@ -50,19 +50,18 @@ export interface UserPerformanceProfile {
     recentTrends?: unknown;
 }
 
+export type TimeWindow = "ALL_TIME" | "LAST_7_DAYS" | "LAST_30_DAYS" | "LAST_90_DAYS";
+
 export interface DifficultyAnalytics {
-    solvedCount: number;
-    sessionCount: number;
+    problemsSolved: number;
     averageSolveTime: number;
     averageAttempts: number;
     firstAttemptSuccessRate: number;
 }
 
 export interface TopicAnalytics {
-    solvedCount: number;
-    sessionCount: number;
+    problemsSolved: number;
     averageSolveTime: number;
-    averageAttempts: number;
     firstAttemptSuccessRate: number;
 }
 

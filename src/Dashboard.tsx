@@ -1,13 +1,15 @@
 import React, { useEffect, useRef, useState } from "react";
-import { AUTH_TOKEN_KEY, BACKEND_URL } from "./config";
+import { AUTH_TOKEN_KEY, BACKEND_URL, REFRESH_TOKEN_KEY } from "./config";
 import { DashboardLayout } from "./components/DashboardLayout";
 import { OverviewPage } from "./pages/OverviewPage";
+import { PerformancePage } from "./pages/PerformancePage";
 import { getUserEmailFromToken } from "./utils/authUtils";
 
 export const Dashboard: React.FC = () => {
     const [token, setToken] = useState<string | null>(null);
     const [isExchanging, setIsExchanging] = useState<boolean>(false);
     const [authError, setAuthError] = useState<string | null>(null);
+    const [activeTab, setActiveTab] = useState<"overview" | "performance">("overview");
 
     // Guard against React StrictMode duplicate execution
     const hasExchangedRef = useRef<boolean>(false);
@@ -45,6 +47,9 @@ export const Dashboard: React.FC = () => {
                 .then((data) => {
                     if (data && data.token) {
                         localStorage.setItem(AUTH_TOKEN_KEY, data.token);
+                        if (data.refreshToken) {
+                            localStorage.setItem(REFRESH_TOKEN_KEY, data.refreshToken);
+                        }
                         setToken(data.token);
 
                         // Immediately sanitize URL: remove ?code= from address bar and history
@@ -70,22 +75,40 @@ export const Dashboard: React.FC = () => {
         }
     }, []);
 
+    // Listen for invalid refresh token events from apiClient
+    useEffect(() => {
+        const onAuthInvalidated = () => {
+            setToken(null);
+            setAuthError("Session expired. Please re-authenticate via the extension.");
+        };
+        window.addEventListener("auth-invalidated", onAuthInvalidated);
+        return () => window.removeEventListener("auth-invalidated", onAuthInvalidated);
+    }, []);
+
     const handleSignOut = () => {
         localStorage.removeItem(AUTH_TOKEN_KEY);
+        localStorage.removeItem(REFRESH_TOKEN_KEY);
         setToken(null);
         setAuthError(null);
     };
 
-    // If authenticated: render full Dashboard Shell + Overview Page
+    // If authenticated: render full Dashboard Shell + active Page
     if (!isExchanging && token) {
         const userEmail = getUserEmailFromToken(token);
+        const isPerformance = activeTab === "performance";
 
         return (
             <DashboardLayout
-                title="Overview"
-                subtitle="Your DSA performance at a glance."
+                title={isPerformance ? "Performance" : "Overview"}
+                subtitle={
+                    isPerformance
+                        ? "Detailed breakdown of your problem-solving performance."
+                        : "Your DSA performance at a glance."
+                }
                 userEmail={userEmail}
                 onLogout={handleSignOut}
+                activeTab={activeTab}
+                onSelectTab={setActiveTab}
             >
                 {/* Subtle SSO handoff confirmation badge */}
                 <div className="mb-5 flex items-center justify-between">
@@ -95,7 +118,7 @@ export const Dashboard: React.FC = () => {
                     </span>
                 </div>
 
-                <OverviewPage token={token} />
+                {isPerformance ? <PerformancePage token={token} /> : <OverviewPage token={token} />}
             </DashboardLayout>
         );
     }

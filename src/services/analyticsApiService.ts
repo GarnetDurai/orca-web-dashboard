@@ -1,19 +1,16 @@
 import { BACKEND_URL } from "../config";
-import type { HistoricalAnalytics, UserPerformanceProfile } from "../types/analytics";
+import { DashboardApiClient } from "./apiClient";
+import type { HistoricalAnalytics, TimeWindow, UserPerformanceProfile } from "../types/analytics";
 
 export class AnalyticsApiService {
     /**
      * Fetches user performance profile from GET /analytics/profile
      */
-    public static async getUserProfile(token: string): Promise<UserPerformanceProfile> {
-        if (!token) {
-            throw new Error("Authentication token is missing.");
-        }
-
-        const response = await fetch(`${BACKEND_URL}/analytics/profile`, {
+    public static async getUserProfile(token?: string): Promise<UserPerformanceProfile> {
+        const response = await DashboardApiClient.authenticatedFetch(`${BACKEND_URL}/analytics/profile`, {
             method: "GET",
             headers: {
-                "Authorization": `Bearer ${token}`,
+                ...(token ? { Authorization: `Bearer ${token}` } : {}),
                 "Content-Type": "application/json"
             }
         });
@@ -31,15 +28,19 @@ export class AnalyticsApiService {
     /**
      * Fetches historical analytics from GET /analytics/historical
      */
-    public static async getHistoricalAnalytics(token: string): Promise<HistoricalAnalytics> {
-        if (!token) {
-            throw new Error("Authentication token is missing.");
+    public static async getHistoricalAnalytics(
+        token?: string,
+        timeWindow: TimeWindow = "ALL_TIME"
+    ): Promise<HistoricalAnalytics> {
+        const url = new URL(`${BACKEND_URL}/analytics/historical`);
+        if (timeWindow) {
+            url.searchParams.set("timeWindow", timeWindow);
         }
 
-        const response = await fetch(`${BACKEND_URL}/analytics/historical`, {
+        const response = await DashboardApiClient.authenticatedFetch(url.toString(), {
             method: "GET",
             headers: {
-                "Authorization": `Bearer ${token}`,
+                ...(token ? { Authorization: `Bearer ${token}` } : {}),
                 "Content-Type": "application/json"
             }
         });

@@ -4,8 +4,8 @@ export interface SidebarProps {
     onLogout: () => void;
     isOpen?: boolean;
     onClose?: () => void;
-    activeTab?: "overview" | "performance";
-    onSelectTab?: (tab: "overview" | "performance") => void;
+    activeTab?: "overview" | "performance" | "confidence";
+    onSelectTab?: (tab: "overview" | "performance" | "confidence") => void;
 }
 
 interface NavItemDef {
@@ -17,7 +17,7 @@ interface NavItemDef {
 const NAV_ITEM_DEFS: NavItemDef[] = [
     { id: "overview", label: "Overview", isPlaceholder: false },
     { id: "performance", label: "Performance", isPlaceholder: false },
-    { id: "confidence", label: "Confidence", isPlaceholder: true },
+    { id: "confidence", label: "Confidence", isPlaceholder: false },
     { id: "revision", label: "Revision", isPlaceholder: true },
     { id: "problems", label: "Problems", isPlaceholder: true }
 ];
@@ -94,7 +94,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                                     key={item.id}
                                     type="button"
                                     onClick={() => {
-                                        onSelectTab?.(item.id as "overview" | "performance");
+                                        onSelectTab?.(item.id as "overview" | "performance" | "confidence");
                                         onClose?.();
                                     }}
                                     className={`w-full flex items-center justify-between px-3 py-2 text-xs font-medium rounded-md transition-colors cursor-pointer text-left ${

@@ -3,13 +3,14 @@ import { AUTH_TOKEN_KEY, BACKEND_URL, REFRESH_TOKEN_KEY } from "./config";
 import { DashboardLayout } from "./components/DashboardLayout";
 import { OverviewPage } from "./pages/OverviewPage";
 import { PerformancePage } from "./pages/PerformancePage";
+import { ConfidencePage } from "./pages/ConfidencePage";
 import { getUserEmailFromToken } from "./utils/authUtils";
 
 export const Dashboard: React.FC = () => {
     const [token, setToken] = useState<string | null>(null);
     const [isExchanging, setIsExchanging] = useState<boolean>(false);
     const [authError, setAuthError] = useState<string | null>(null);
-    const [activeTab, setActiveTab] = useState<"overview" | "performance">("overview");
+    const [activeTab, setActiveTab] = useState<"overview" | "performance" | "confidence">("overview");
 
     // Guard against React StrictMode duplicate execution
     const hasExchangedRef = useRef<boolean>(false);
@@ -95,16 +96,22 @@ export const Dashboard: React.FC = () => {
     // If authenticated: render full Dashboard Shell + active Page
     if (!isExchanging && token) {
         const userEmail = getUserEmailFromToken(token);
-        const isPerformance = activeTab === "performance";
+
+        let title = "Overview";
+        let subtitle = "Your DSA performance at a glance.";
+
+        if (activeTab === "performance") {
+            title = "Performance";
+            subtitle = "Detailed breakdown of your problem-solving performance.";
+        } else if (activeTab === "confidence") {
+            title = "Confidence";
+            subtitle = "Problem-level confidence based on solving, independence, and retention evidence.";
+        }
 
         return (
             <DashboardLayout
-                title={isPerformance ? "Performance" : "Overview"}
-                subtitle={
-                    isPerformance
-                        ? "Detailed breakdown of your problem-solving performance."
-                        : "Your DSA performance at a glance."
-                }
+                title={title}
+                subtitle={subtitle}
                 userEmail={userEmail}
                 onLogout={handleSignOut}
                 activeTab={activeTab}
@@ -118,7 +125,9 @@ export const Dashboard: React.FC = () => {
                     </span>
                 </div>
 
-                {isPerformance ? <PerformancePage token={token} /> : <OverviewPage token={token} />}
+                {activeTab === "performance" && <PerformancePage token={token} />}
+                {activeTab === "confidence" && <ConfidencePage />}
+                {activeTab === "overview" && <OverviewPage token={token} />}
             </DashboardLayout>
         );
     }

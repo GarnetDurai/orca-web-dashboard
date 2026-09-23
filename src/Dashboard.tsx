@@ -4,13 +4,14 @@ import { DashboardLayout } from "./components/DashboardLayout";
 import { OverviewPage } from "./pages/OverviewPage";
 import { PerformancePage } from "./pages/PerformancePage";
 import { ConfidencePage } from "./pages/ConfidencePage";
+import { RevisionPage } from "./pages/RevisionPage";
 import { getUserEmailFromToken } from "./utils/authUtils";
 
 export const Dashboard: React.FC = () => {
     const [token, setToken] = useState<string | null>(null);
     const [isExchanging, setIsExchanging] = useState<boolean>(false);
     const [authError, setAuthError] = useState<string | null>(null);
-    const [activeTab, setActiveTab] = useState<"overview" | "performance" | "confidence">("overview");
+    const [activeTab, setActiveTab] = useState<"overview" | "performance" | "confidence" | "revision">("overview");
 
     // Guard against React StrictMode duplicate execution
     const hasExchangedRef = useRef<boolean>(false);
@@ -106,6 +107,9 @@ export const Dashboard: React.FC = () => {
         } else if (activeTab === "confidence") {
             title = "Confidence";
             subtitle = "Problem-level confidence based on solving, independence, and retention evidence.";
+        } else if (activeTab === "revision") {
+            title = "Revision";
+            subtitle = "Prioritized Spaced Repetition (SRS) queue and scheduled review plan.";
         }
 
         return (
@@ -127,6 +131,7 @@ export const Dashboard: React.FC = () => {
 
                 {activeTab === "performance" && <PerformancePage token={token} />}
                 {activeTab === "confidence" && <ConfidencePage />}
+                {activeTab === "revision" && <RevisionPage />}
                 {activeTab === "overview" && <OverviewPage token={token} />}
             </DashboardLayout>
         );

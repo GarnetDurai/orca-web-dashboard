@@ -7,8 +7,8 @@ export interface DashboardLayoutProps {
     subtitle: string;
     userEmail?: string | null;
     onLogout: () => void;
-    activeTab?: "overview" | "performance" | "confidence";
-    onSelectTab?: (tab: "overview" | "performance" | "confidence") => void;
+    activeTab?: "overview" | "performance" | "confidence" | "revision";
+    onSelectTab?: (tab: "overview" | "performance" | "confidence" | "revision") => void;
     children: React.ReactNode;
 }
 

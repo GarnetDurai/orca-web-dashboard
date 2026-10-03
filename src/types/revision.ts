@@ -17,6 +17,7 @@ export interface ReviewCapacity {
 export interface ReviewQueueItem {
     problemId: number;
     leetcodeId: number;
+    leetcodeSlug?: string;
     problemTitle: string;
     difficulty: Difficulty;
     lastReviewedAt?: string | null;
@@ -69,6 +70,7 @@ export interface RevisionState {
     id: number;
     problemId: number;
     leetcodeId: number;
+    leetcodeSlug?: string;
     problemTitle: string;
     difficulty: Difficulty;
     reviewCount: number;

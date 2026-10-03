@@ -247,6 +247,7 @@ export const RevisionPage: React.FC = () => {
             return {
                 problemId: cached.problemId,
                 leetcodeId: cached.leetcodeId,
+                leetcodeSlug: cached.leetcodeSlug,
                 problemTitle: cached.problemTitle,
                 difficulty: cached.difficulty,
                 currentConfidence: conf != null ? conf : null,
@@ -267,6 +268,7 @@ export const RevisionPage: React.FC = () => {
             return {
                 problemId: inQueue.problemId,
                 leetcodeId: inQueue.leetcodeId,
+                leetcodeSlug: inQueue.leetcodeSlug || state?.leetcodeSlug,
                 problemTitle: inQueue.problemTitle,
                 difficulty: inQueue.difficulty,
                 currentConfidence: inQueue.currentConfidence,
@@ -287,6 +289,7 @@ export const RevisionPage: React.FC = () => {
             return {
                 problemId: inAll.problemId,
                 leetcodeId: inAll.leetcodeId,
+                leetcodeSlug: inAll.leetcodeSlug,
                 problemTitle: inAll.problemTitle,
                 difficulty: inAll.difficulty,
                 currentConfidence: conf != null ? conf : null,
@@ -545,7 +548,11 @@ export const RevisionPage: React.FC = () => {
 
                             {/* 9. Passive SRS Action: Open problem on LeetCode */}
                             <a
-                                href={`https://leetcode.com/problems/${selectedProblem.leetcodeId}`}
+                                href={
+                                    selectedProblem.leetcodeSlug
+                                        ? `https://leetcode.com/problems/${selectedProblem.leetcodeSlug}/`
+                                        : `https://leetcode.com/problems/${selectedProblem.leetcodeId}/`
+                                }
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-md bg-sky-50 dark:bg-sky-950/50 text-sky-700 dark:text-sky-300 border border-sky-200 dark:border-sky-800/80 hover:bg-sky-100 dark:hover:bg-sky-900/50 transition-colors cursor-pointer w-fit"

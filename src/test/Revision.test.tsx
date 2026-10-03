@@ -123,6 +123,7 @@ const mockProblem1Detail: RevisionState = {
     id: 1,
     problemId: 1,
     leetcodeId: 1,
+    leetcodeSlug: "two-sum",
     problemTitle: "Two Sum",
     difficulty: "EASY",
     reviewCount: 3,
@@ -177,9 +178,12 @@ const mockConfidenceData: ConfidenceResponse[] = [
 describe("RevisionPage & Dashboard Revision Integration", () => {
     beforeEach(() => {
         vi.clearAllMocks();
+        vi.useFakeTimers({ toFake: ["Date"] });
+        vi.setSystemTime(new Date("2026-09-23T12:00:00Z"));
     });
 
     afterEach(() => {
+        vi.useRealTimers();
         vi.restoreAllMocks();
     });
 
@@ -302,7 +306,8 @@ describe("RevisionPage & Dashboard Revision Integration", () => {
 
         // Passive SRS: Open on LeetCode link present
         const leetcodeLink = screen.getByRole("link", { name: /Open on LeetCode/i });
-        expect(leetcodeLink).toHaveAttribute("href", "https://leetcode.com/problems/1");
+        expect(leetcodeLink).toHaveAttribute("href", "https://leetcode.com/problems/two-sum/");
+        expect(leetcodeLink).not.toHaveAttribute("href", "https://leetcode.com/problems/1");
         expect(leetcodeLink).toHaveAttribute("target", "_blank");
 
         // History items rendered
